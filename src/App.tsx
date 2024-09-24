@@ -189,6 +189,19 @@ export default function App() {
           </div>
         </div>
       )}
+
+
+      <div className="mt-8">
+  <a
+    href="https://github.com/KhaledAliAhmed" // Update with your GitHub link
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-xl font-bold transition-all duration-300 transform hover:scale-105 hover:tracking-wider"
+  >
+    Made by Khaled Ali Ahmed
+  </a>
+</div>
+
     </div>
   );
 }

@@ -166,9 +166,9 @@ export default function App() {
             href="https://github.com/Engineered0" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="transition-transform transform hover:translate-y-1 hover:translate-x-1 hover:rotate-3"
+            className="transition-transform transform hover:translate-x-1 hover:translate-y-1 hover:rotate-3 hover:text-blue-600"
           >
-            Created by Khaled Ali Ahmed
+            Made by Khaled Ali Ahmed
           </a>
         </p>
       </div>

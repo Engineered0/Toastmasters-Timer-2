@@ -70,10 +70,10 @@ export default function App() {
     const good = history.filter((item) => item.duration >= 20 && item.duration < 30)
     const great = history.filter((item) => item.duration >= 30 && item.duration < 40)
     const tooMuch = history.filter((item) => item.duration >= 40)
-    return { good, great, tooMuch }
+    return { okay, good, great, tooMuch }
   }
 
-  const { good, great, tooMuch } = categorizeHistory()
+  const { okay, good, great, tooMuch } = categorizeHistory()
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4" style={{ backgroundColor }}>

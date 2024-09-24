@@ -66,6 +66,7 @@ export default function App() {
   }, [time])
 
   const categorizeHistory = () => {
+    const okay = history.filter((item) => item.duration >= 0 && item.duration < 19)
     const good = history.filter((item) => item.duration >= 20 && item.duration < 30)
     const great = history.filter((item) => item.duration >= 30 && item.duration < 40)
     const tooMuch = history.filter((item) => item.duration >= 40)
@@ -111,6 +112,16 @@ export default function App() {
       <div className="w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4">History</h2>
         <div className="space-y-4">
+          <div>
+            <h3 className="text-xl font-semibold mb-2 text-green-600">Good (0-19 seconds)</h3>
+            <div className="max-h-40 overflow-y-auto">
+              {good.map((item, index) => (
+                <div key={index} className="p-2 mb-2 rounded bg-white-100">
+                  <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
+                </div>
+              ))}
+            </div>
+          </div>
           <div>
             <h3 className="text-xl font-semibold mb-2 text-green-600">Good (20-30 seconds)</h3>
             <div className="max-h-40 overflow-y-auto">

@@ -12,6 +12,8 @@ export default function App() {
   const [speakerName, setSpeakerName] = useState('');
   const [history, setHistory] = useState<TimerHistory[]>([]);
   const [backgroundColor, setBackgroundColor] = useState('#FFFFFF');
+  const [isTimerVisible, setIsTimerVisible] = useState(true);
+  const [isHistoryVisible, setIsHistoryVisible] = useState(false);
   const intervalRef = useRef<number | null>(null);
 
   const startTimer = useCallback(() => {
@@ -32,11 +34,12 @@ export default function App() {
       intervalRef.current = null;
     }
 
+    // Save history only when the timer is stopped
     setHistory((prevHistory) => [
       ...prevHistory,
       { name: speakerName, duration: time, color: backgroundColor },
     ]);
-    
+
     resetTimer();
   }, [speakerName, time, backgroundColor]);
 
@@ -45,6 +48,7 @@ export default function App() {
     setIsActive(false);
     setSpeakerName('');
     setBackgroundColor('#FFFFFF');
+    setIsTimerVisible(true); // Reset timer visibility when resetting
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -78,11 +82,16 @@ export default function App() {
   const { okay, good, great, tooMuch } = categorizeHistory();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4" style={{ backgroundColor }}>
-      <h1 className="text-4xl font-bold mb-8">Toastmasters Timer</h1>
-      <div className="text-6xl font-bold mb-8">{formatTime(time)}</div>
+    <div className="flex flex-col items-center justify-center min-h-screen p-6" style={{ backgroundColor }}>
+      <h1 className="text-4xl font-bold mb-8 text-center">Toastmasters Timer</h1>
+      
+      {/* Timer visibility toggle */}
+      {isTimerVisible && (
+        <div className="text-6xl font-bold mb-8">{formatTime(time)}</div>
+      )}
+      
       <input
-        className="w-full max-w-md px-4 py-2 mb-4 border border-gray-300 rounded"
+        className="w-full max-w-md px-4 py-2 mb-4 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         type="text"
         placeholder="Enter speaker's name"
         value={speakerName}
@@ -91,87 +100,95 @@ export default function App() {
       />
       <div className="flex space-x-4 mb-8">
         <button
-          className={`px-4 py-2 font-bold text-white bg-blue-500 rounded ${isActive ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
+          className={`px-4 py-2 font-bold text-white bg-blue-500 rounded shadow transition duration-200 ${isActive ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
           onClick={startTimer}
           disabled={isActive}
         >
           Start
         </button>
         <button
-          className={`px-4 py-2 font-bold text-white bg-red-500 rounded ${!isActive ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'}`}
+          className={`px-4 py-2 font-bold text-white bg-red-500 rounded shadow transition duration-200 ${!isActive ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'}`}
           onClick={stopTimer}
           disabled={!isActive}
         >
           Stop
         </button>
         <button
-          className="px-4 py-2 font-bold text-white bg-gray-500 rounded hover:bg-gray-700"
+          className="px-4 py-2 font-bold text-white bg-gray-500 rounded shadow hover:bg-gray-700 transition duration-200"
           onClick={resetTimer}
         >
           Reset
         </button>
+
+        {/* Button to toggle timer visibility */}
+        {isActive && (
+          <button
+            className={`px-4 py-2 font-bold text-white bg-orange-500 rounded shadow hover:bg-orange-700 transition duration-200`}
+            onClick={() => setIsTimerVisible((prev) => !prev)}
+          >
+            {isTimerVisible ? 'Hide Timer' : 'Show Timer'}
+          </button>
+        )}
       </div>
 
-      <div className="flex flex-col items-center mb-8">
-        <h2 className="text-2xl font-bold mb-4">History</h2>
-        <div className="space-y-4">
-          <div>
-            <h3 className="text-xl font-semibold mb-2 text-black-100">Okay (0-19 seconds)</h3>
-            <div className="max-h-40 overflow-y-auto">
-              {okay.map((item, index) => (
-                <div key={index} className="p-2 mb-2 rounded bg-white-100">
-                  <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
-                </div>
-              ))}
+      {/* Button to toggle history visibility */}
+      <div className="flex mb-4">
+        <button
+          className={`px-4 py-2 font-bold text-white bg-purple-500 rounded shadow hover:bg-purple-700 transition duration-200`}
+          onClick={() => setIsHistoryVisible((prev) => !prev)}
+        >
+          {isHistoryVisible ? 'Hide History' : 'Show History'}
+        </button>
+      </div>
+
+      {/* History Section */}
+      {isHistoryVisible && (
+        <div className="w-full max-w-md mt-4 p-4 border border-gray-300 rounded shadow bg-white">
+          <h2 className="text-2xl font-bold mb-4">History</h2>
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-xl font-semibold mb-2 text-black">Okay (0-19 seconds)</h3>
+              <div className="max-h-40 overflow-y-auto">
+                {okay.map((item, index) => (
+                  <div key={index} className="p-2 mb-2 rounded bg-gray-100">
+                    <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold mb-2 text-green-600">Good (20-30 seconds)</h3>
-            <div className="max-h-40 overflow-y-auto">
-              {good.map((item, index) => (
-                <div key={index} className="p-2 mb-2 rounded bg-green-100">
-                  <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
-                </div>
-              ))}
+            <div>
+              <h3 className="text-xl font-semibold mb-2 text-green-600">Good (20-30 seconds)</h3>
+              <div className="max-h-40 overflow-y-auto">
+                {good.map((item, index) => (
+                  <div key={index} className="p-2 mb-2 rounded bg-green-100">
+                    <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold mb-2 text-yellow-600">Great (30-40 seconds)</h3>
-            <div className="max-h-40 overflow-y-auto">
-              {great.map((item, index) => (
-                <div key={index} className="p-2 mb-2 rounded bg-yellow-100">
-                  <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
-                </div>
-              ))}
+            <div>
+              <h3 className="text-xl font-semibold mb-2 text-yellow-600">Great (30-40 seconds)</h3>
+              <div className="max-h-40 overflow-y-auto">
+                {great.map((item, index) => (
+                  <div key={index} className="p-2 mb-2 rounded bg-yellow-100">
+                    <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold mb-2 text-red-600">Too Much (40+ seconds)</h3>
-            <div className="max-h-40 overflow-y-auto">
-              {tooMuch.map((item, index) => (
-                <div key={index} className="p-2 mb-2 rounded bg-red-100">
-                  <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
-                </div>
-              ))}
+            <div>
+              <h3 className="text-xl font-semibold mb-2 text-red-600">Too Much (40+ seconds)</h3>
+              <div className="max-h-40 overflow-y-auto">
+                {tooMuch.map((item, index) => (
+                  <div key={index} className="p-2 mb-2 rounded bg-red-100">
+                    <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      
-      {/* Your Name and GitHub Link */}
-      <div className="mb-4">
-        <p className="text-xl font-semibold">
-          Made by{' '}
-          <a 
-            href="https://github.com/Engineered0" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="transition-transform transform hover:translate-x-1 hover:translate-y-1 hover:rotate-3 hover:text-blue-600"
-          >
-            Khaled Ali Ahmed
-          </a>
-        </p>
-      </div>
+      )}
     </div>
   );
 }

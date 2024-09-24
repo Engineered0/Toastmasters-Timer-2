@@ -12,6 +12,8 @@ export default function App() {
   const [speakerName, setSpeakerName] = useState('');
   const [history, setHistory] = useState<TimerHistory[]>([]);
   const [backgroundColor, setBackgroundColor] = useState('#FFFFFF');
+  const [isTimerVisible, setIsTimerVisible] = useState(true); // New state for timer visibility
+  const [isHistoryVisible, setIsHistoryVisible] = useState(false); // New state for history visibility
   const intervalRef = useRef<number | null>(null);
 
   const startTimer = useCallback(() => {
@@ -46,6 +48,7 @@ export default function App() {
     setIsActive(false);
     setSpeakerName('');
     setBackgroundColor('#FFFFFF');
+    setIsTimerVisible(true); // Reset timer visibility when resetting
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -81,7 +84,12 @@ export default function App() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4" style={{ backgroundColor }}>
       <h1 className="text-4xl font-bold mb-8">Toastmasters Timer</h1>
-      <div className="text-6xl font-bold mb-8">{formatTime(time)}</div>
+      
+      {/* Timer visibility toggle */}
+      {isTimerVisible && (
+        <div className="text-6xl font-bold mb-8">{formatTime(time)}</div>
+      )}
+      
       <input
         className="w-full max-w-md px-4 py-2 mb-4 border border-gray-300 rounded"
         type="text"
@@ -111,52 +119,76 @@ export default function App() {
         >
           Reset
         </button>
+
+        {/* Button to toggle timer visibility */}
+        {isActive && (
+          <button
+            className={`px-4 py-2 font-bold text-white bg-orange-500 rounded hover:bg-orange-700`}
+            onClick={() => setIsTimerVisible((prev) => !prev)}
+          >
+            {isTimerVisible ? 'Hide Timer' : 'Show Timer'}
+          </button>
+        )}
       </div>
-      <div className="w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4">History</h2>
-        <div className="space-y-4">
-          <div>
-            <h3 className="text-xl font-semibold mb-2 text-black-100">Okay (0-19 seconds)</h3>
-            <div className="max-h-40 overflow-y-auto">
-              {okay.map((item, index) => (
-                <div key={index} className="p-2 mb-2 rounded bg-white-100">
-                  <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
-                </div>
-              ))}
+
+      {/* Button to toggle history visibility */}
+      <div className="flex mb-4">
+        <button
+          className={`px-4 py-2 font-bold text-white bg-purple-500 rounded hover:bg-purple-700`}
+          onClick={() => setIsHistoryVisible((prev) => !prev)}
+        >
+          {isHistoryVisible ? 'Hide History' : 'Show History'}
+        </button>
+      </div>
+
+      {/* History Section */}
+      {isHistoryVisible && (
+        <div className="w-full max-w-md">
+          <h2 className="text-2xl font-bold mb-4">History</h2>
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-xl font-semibold mb-2 text-black-100">Okay (0-19 seconds)</h3>
+              <div className="max-h-40 overflow-y-auto">
+                {okay.map((item, index) => (
+                  <div key={index} className="p-2 mb-2 rounded bg-white-100">
+                    <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold mb-2 text-green-600">Good (20-30 seconds)</h3>
-            <div className="max-h-40 overflow-y-auto">
-              {good.map((item, index) => (
-                <div key={index} className="p-2 mb-2 rounded bg-green-100">
-                  <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
-                </div>
-              ))}
+            <div>
+              <h3 className="text-xl font-semibold mb-2 text-green-600">Good (20-30 seconds)</h3>
+              <div className="max-h-40 overflow-y-auto">
+                {good.map((item, index) => (
+                  <div key={index} className="p-2 mb-2 rounded bg-green-100">
+                    <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold mb-2 text-yellow-600">Great (30-40 seconds)</h3>
-            <div className="max-h-40 overflow-y-auto">
-              {great.map((item, index) => (
-                <div key={index} className="p-2 mb-2 rounded bg-yellow-100">
-                  <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
-                </div>
-              ))}
+            <div>
+              <h3 className="text-xl font-semibold mb-2 text-yellow-600">Great (30-40 seconds)</h3>
+              <div className="max-h-40 overflow-y-auto">
+                {great.map((item, index) => (
+                  <div key={index} className="p-2 mb-2 rounded bg-yellow-100">
+                    <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold mb-2 text-red-600">Too Much (40+ seconds)</h3>
-            <div className="max-h-40 overflow-y-auto">
-              {tooMuch.map((item, index) => (
-                <div key={index} className="p-2 mb-2 rounded bg-red-100">
-                  <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
-                </div>
-              ))}
+            <div>
+              <h3 className="text-xl font-semibold mb-2 text-red-600">Too Much (40+ seconds)</h3>
+              <div className="max-h-40 overflow-y-auto">
+                {tooMuch.map((item, index) => (
+                  <div key={index} className="p-2 mb-2 rounded bg-red-100">
+                    <span className="font-bold">{item.name}:</span> {formatTime(item.duration)}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -83,7 +83,7 @@ export default function App() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6" style={{ backgroundColor }}>
-      <h1 className="text-4xl font-bold mb-8 text-center">Toastmasters Timer</h1>
+      <h1 className="text-4xl font-bold mb-8 text-center">Toastmasters Timer For Table Topics</h1>
       
       {/* Timer visibility toggle */}
       {isTimerVisible && (

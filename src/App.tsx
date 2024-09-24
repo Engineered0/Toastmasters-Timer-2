@@ -1,79 +1,82 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react'
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 
 interface TimerHistory {
-  name: string
-  duration: number
-  color: string
+  name: string;
+  duration: number;
+  color: string;
 }
 
 export default function App() {
-  const [time, setTime] = useState(0)
-  const [isActive, setIsActive] = useState(false)
-  const [speakerName, setSpeakerName] = useState('')
-  const [history, setHistory] = useState<TimerHistory[]>([])
-  const [backgroundColor, setBackgroundColor] = useState('#FFFFFF')
-  const intervalRef = useRef<number | null>(null)
+  const [time, setTime] = useState(0);
+  const [isActive, setIsActive] = useState(false);
+  const [speakerName, setSpeakerName] = useState('');
+  const [history, setHistory] = useState<TimerHistory[]>([]);
+  const [backgroundColor, setBackgroundColor] = useState('#FFFFFF');
+  const intervalRef = useRef<number | null>(null);
 
   const startTimer = useCallback(() => {
     if (speakerName.trim() === '') {
-      alert('Please enter a speaker name')
-      return
+      alert('Please enter a speaker name');
+      return;
     }
-    setIsActive(true)
+    setIsActive(true);
     intervalRef.current = window.setInterval(() => {
-      setTime((prevTime) => prevTime + 1)
-    }, 1000)
-  }, [speakerName])
+      setTime((prevTime) => prevTime + 1);
+    }, 1000);
+  }, [speakerName]);
 
   const stopTimer = useCallback(() => {
-    setIsActive(false)
+    setIsActive(false);
     if (intervalRef.current) {
-      clearInterval(intervalRef.current)
-      intervalRef.current = null
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
+
+    // Save history only when the timer is stopped
     setHistory((prevHistory) => [
       ...prevHistory,
       { name: speakerName, duration: time, color: backgroundColor },
-    ])
-    resetTimer()
-  }, [speakerName, time, backgroundColor])
+    ]);
+    
+    resetTimer();
+  }, [speakerName, time, backgroundColor]);
 
   const resetTimer = useCallback(() => {
-    setTime(0)
-    setIsActive(false)
-    setSpeakerName('')
-    setBackgroundColor('#FFFFFF')
+    setTime(0);
+    setIsActive(false);
+    setSpeakerName('');
+    setBackgroundColor('#FFFFFF');
     if (intervalRef.current) {
-      clearInterval(intervalRef.current)
-      intervalRef.current = null
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
-  }, [])
+  }, []);
 
   const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
-  }
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   useEffect(() => {
     if (time >= 20 && time < 30) {
-      setBackgroundColor('#4CAF50') // Green
+      setBackgroundColor('#4CAF50'); // Green
     } else if (time >= 30 && time < 40) {
-      setBackgroundColor('#FFEB3B') // Yellow
+      setBackgroundColor('#FFEB3B'); // Yellow
     } else if (time >= 40) {
-      setBackgroundColor('#F44336') // Red
+      setBackgroundColor('#F44336'); // Red
     }
-  }, [time])
+  }, [time]);
 
   const categorizeHistory = () => {
-    const okay = history.filter((item) => item.duration >= 0 && item.duration < 19)
-    const good = history.filter((item) => item.duration >= 20 && item.duration < 30)
-    const great = history.filter((item) => item.duration >= 30 && item.duration < 40)
-    const tooMuch = history.filter((item) => item.duration >= 40)
-    return { okay, good, great, tooMuch }
-  }
+    const okay = history.filter((item) => item.duration < 20);
+    const good = history.filter((item) => item.duration >= 20 && item.duration < 30);
+    const great = history.filter((item) => item.duration >= 30 && item.duration < 40);
+    const tooMuch = history.filter((item) => item.duration >= 40);
+    return { okay, good, great, tooMuch };
+  };
 
-  const { okay, good, great, tooMuch } = categorizeHistory()
+  const { okay, good, great, tooMuch } = categorizeHistory();
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4" style={{ backgroundColor }}>
@@ -155,5 +158,5 @@ export default function App() {
         </div>
       </div>
     </div>
-  )
+  );
 }

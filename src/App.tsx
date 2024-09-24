@@ -161,14 +161,14 @@ export default function App() {
       {/* Your Name and GitHub Link */}
       <div className="mb-4">
         <p className="text-xl font-semibold">
-          My name is{' '}
+          Made by{' '}
           <a 
             href="https://github.com/Engineered0" 
             target="_blank" 
             rel="noopener noreferrer" 
             className="transition-transform transform hover:translate-x-1 hover:translate-y-1 hover:rotate-3 hover:text-blue-600"
           >
-            Made by Khaled Ali Ahmed
+            Khaled Ali Ahmed
           </a>
         </p>
       </div>

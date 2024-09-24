@@ -113,7 +113,7 @@ export default function App() {
         <h2 className="text-2xl font-bold mb-4">History</h2>
         <div className="space-y-4">
           <div>
-            <h3 className="text-xl font-semibold mb-2 text-green-600">Good (0-19 seconds)</h3>
+            <h3 className="text-xl font-semibold mb-2 text-black-100">Okay (0-19 seconds)</h3>
             <div className="max-h-40 overflow-y-auto">
               {good.map((item, index) => (
                 <div key={index} className="p-2 mb-2 rounded bg-white-100">
